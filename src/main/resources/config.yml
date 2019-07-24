@@ -1,13 +1,3 @@
-# Better Vanilla Generator
-[![](https://i.loli.net/2019/06/12/5d00613070e3947388.png)](http://www.mcbbs.net/thread-872584-1-1.html "更好的原生地形生成器")
-
-Better vanilla generator plugin for Nukkit.
-
-Warning: Please back up old worlds before using this plugin.
-
-Please see [mcbbs](http://www.mcbbs.net/thread-872584-1-1.html) for more information.
-## config.yml
-```yaml
 replace:
   # Whether to replace the overworld generator
   overworld: true
@@ -102,4 +92,3 @@ generator:
         y: 60.0
         z: 80.0
     surface-scale: 0.0625
-```
