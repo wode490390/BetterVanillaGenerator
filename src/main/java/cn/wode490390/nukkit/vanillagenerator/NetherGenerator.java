@@ -3,6 +3,7 @@ package cn.wode490390.nukkit.vanillagenerator;
 import cn.nukkit.block.Block;
 import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
@@ -294,7 +295,7 @@ public class NetherGenerator extends VanillaGenerator {
         this.populators.forEach((populator) -> {
             populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
         });
-        EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom); //NOTE: Biome.getBiome(
+        Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
     @Override

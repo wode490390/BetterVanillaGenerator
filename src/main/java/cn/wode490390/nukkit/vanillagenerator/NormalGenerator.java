@@ -217,12 +217,12 @@ public class NormalGenerator extends VanillaGenerator {
                 double avgHeightScale = 0;
                 double avgHeightBase = 0;
                 double totalWeight = 0;
-                int biome = EnumBiome.getBiome(biomeGrid[i + 2 + (j + 2) * 10]).getId(); //NOTE: Biome.getBiome(
+                int biome = Biome.getBiome(biomeGrid[i + 2 + (j + 2) * 10]).getId();
                 BiomeHeight biomeHeight = HEIGHT_MAP.getOrDefault(biome, defaultHeight);
                 // Sampling an average height base and scale by visiting the neighborhood of the current biomegrid column.
                 for (int m = 0; m < 5; m++) {
                     for (int n = 0; n < 5; n++) {
-                        int nearBiome = EnumBiome.getBiome(biomeGrid[i + m + (j + n) * 10]).getId(); //NOTE: Biome.getBiome(
+                        int nearBiome = Biome.getBiome(biomeGrid[i + m + (j + n) * 10]).getId();
                         BiomeHeight nearBiomeHeight = HEIGHT_MAP.getOrDefault(nearBiome, defaultHeight);
                         double heightBase = biomeHeightOffset + nearBiomeHeight.getHeight() * biomeHeightWeight;
                         double heightScale = biomeScaleOffset + nearBiomeHeight.getScale() * biomeScaleWeight;
@@ -384,7 +384,7 @@ public class NormalGenerator extends VanillaGenerator {
         this.populators.forEach((populator) -> {
             populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
         });
-        EnumBiome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom); //NOTE: Biome.getBiome(
+        Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 
     @Override

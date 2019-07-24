@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.wode490390.nukkit</groupId>
     <artifactId>vanillagenerator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>BetterVanillaGenerator</name>
     <description>Better vanilla generator plugin for Nukkit</description>
     <inceptionYear>2018</inceptionYear>
