@@ -1,12 +1,29 @@
 # Better Vanilla Generator
-[![](https://i.loli.net/2019/06/12/5d00613070e3947388.png)](http://www.mcbbs.net/thread-872584-1-1.html "更好的原生地形生成器")
+[![Build](https://img.shields.io/circleci/build/github/wode490390/BetterVanillaGenerator/master)](https://circleci.com/gh/wode490390/BetterVanillaGenerator/tree/master)
+[![Release](https://img.shields.io/github/v/release/wode490390/BetterVanillaGenerator)](https://github.com/wode490390/BetterVanillaGenerator/releases)
+[![Release date](https://img.shields.io/github/release-date/wode490390/BetterVanillaGenerator)](https://github.com/wode490390/BetterVanillaGenerator/releases)
+<!--[![Servers](https://img.shields.io/bstats/servers/5198)](https://bstats.org/plugin/bukkit/BetterVanillaGenerator/5198)
+[![Players](https://img.shields.io/bstats/players/5198)](https://bstats.org/plugin/bukkit/BetterVanillaGenerator/5198)-->
 
-Better vanilla generator plugin for Nukkit.
+This plugin not only provides better terrain generators for [Nukkit](https://github.com/NukkitX/Nukkit), you can also customize your world by modifying the configuration.
 
-Warning: Please back up old worlds before using this plugin.
+In addition, this plugin can offload overworld surface noise operations onto the GPU. (Experimental)
 
-Please see [mcbbs](http://www.mcbbs.net/thread-872584-1-1.html) for more information.
-## config.yml
+[![](https://i.loli.net/2019/06/12/5d00613070e3947388.png)](https://www.mcbbs.net/thread-872584-1-1.html "可自定义的更好的原生地形生成器")
+
+If you found any bugs or have any suggestions, please open an issue on [GitHub Issues](https://github.com/wode490390/BetterVanillaGenerator/issues).
+
+If you love this plugin, please star it on [GitHub](https://github.com/wode490390/BetterVanillaGenerator).
+
+*Note: Please back up old worlds before using this plugin.*
+
+## Download
+- [Releases](https://github.com/wode490390/BetterVanillaGenerator/releases)
+- [Snapshots](https://circleci.com/gh/wode490390/BetterVanillaGenerator)
+
+## Configurations
+
+### config.yml
 ```yaml
 replace:
   # Whether to replace the overworld generator
@@ -102,5 +119,21 @@ generator:
         y: 60.0
         z: 80.0
     surface-scale: 0.0625
+
+# Whether to use graphics compute functionality (Experimental)
+gpu:
+  enable: false
+  use-any-device: false
 ```
+
+## Compiling
+1. Install [Maven](https://maven.apache.org/).
+2. Run `mvn clean package`. The compiled JAR can be found in the `target/` directory.
+
+## Metrics Collection
+
+This plugin uses [bStats](https://github.com/wode490390/bStats-Nukkit) - you can opt out using the global bStats config, see the [official website](https://bstats.org/getting-started) for more details.
+
+[![Metrics](https://bstats.org/signatures/bukkit/BetterVanillaGenerator.svg)](https://bstats.org/plugin/bukkit/BetterVanillaGenerator/5198)
+
 ###### If I have any grammar and terms error, please correct my wrong :)

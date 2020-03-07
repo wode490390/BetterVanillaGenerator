@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>cn.wode490390.nukkit</groupId>
     <artifactId>vanillagenerator</artifactId>
-    <version>1.0.1</version>
+    <packaging>jar</packaging>
+    <version>1.1.0</version>
     <name>BetterVanillaGenerator</name>
     <description>Better vanilla generator plugin for Nukkit</description>
-    <inceptionYear>2018</inceptionYear>
     <url>http://wode490390.cn/</url>
-    <packaging>jar</packaging>
+    <inceptionYear>2018</inceptionYear>
+
     <licenses>
         <license>
             <name>GNU General Public License, Version 3.0</name>
@@ -16,17 +20,44 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/wode490390/BetterVanillaGenerator/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>CircleCI</system>
+        <url>https://circleci.com/gh/wode490390/BetterVanillaGenerator</url>
+    </ciManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/wode490390/BetterVanillaGenerator.git</connection>
+        <developerConnection>scm:git:git@github.com:wode490390/BetterVanillaGenerator.git</developerConnection>
+        <url>https://github.com/wode490390/BetterVanillaGenerator</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>github-releases</name>
+            <url>https://maven.pkg.github.com/wode490390/BetterVanillaGenerator</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <repositories>
         <repository>
-            <id>nukkitx</id>
+            <id>nukkitx-repo</id>
             <url>http://repo.nukkitx.com/main/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>cn.nukkit</groupId>
@@ -34,7 +65,20 @@
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+            <version>2.3.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jogamp.jocl</groupId>
+            <artifactId>jocl-main</artifactId>
+            <version>2.3.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
     <build>
         <finalName>wodeBetterVanillaGenerator-${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
@@ -44,9 +88,80 @@
                 <filtering>true</filtering>
                 <directory>${basedir}/src/main/resources</directory>
                 <includes>
-                    <include>*.yml</include>
+                    <include>**</include>
                 </includes>
             </resource>
         </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <!--<filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>natives/android-**/</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>-->
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <prefix>git</prefix>
+                    <dateFormat>yyyy.MM.dd '@' HH:mm:ss z</dateFormat>
+                    <dateFormatTimeZone>${user.timezone}</dateFormatTimeZone>
+                    <verbose>true</verbose>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    <format>properties</format>
+                    <skipPoms>true</skipPoms>
+                    <injectAllReactorProjects>false</injectAllReactorProjects>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                    <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
+                    <skip>false</skip>
+                    <runOnlyOnce>true</runOnlyOnce>
+                    <excludeProperties>
+                        <excludeProperty>git.user.*</excludeProperty>
+                    </excludeProperties>
+                    <includeOnlyProperties />
+                    <useNativeGit>false</useNativeGit>
+                    <abbrevLength>7</abbrevLength>
+                    <commitIdGenerationMode>flat</commitIdGenerationMode>
+                    <gitDescribe>
+                        <skip>false</skip>
+                        <always>false</always>
+                        <abbrev>7</abbrev>
+                        <dirty>-dirty</dirty>
+                        <match>*</match>
+                        <tags>false</tags>
+                        <forceLongFormat>false</forceLongFormat>
+                    </gitDescribe>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>

@@ -1,4 +1,4 @@
-package cn.wode490390.nukkit.vanillagenerator;
+package cn.wode490390.nukkit.vanillagenerator.util;
 
 import cn.nukkit.Server;
 import cn.nukkit.plugin.Plugin;
@@ -17,7 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -77,14 +76,20 @@ public class MetricsLite {
     // The plugin
     private final Plugin plugin;
 
+    // The plugin id
+    private final int pluginId;
+
     /**
      * Class constructor.
      *
      * @param plugin The plugin which stats should be submitted.
+     * @param pluginId The id of the plugin.
+     *                 It can be found at <a href="https://bstats.org/what-is-my-plugin-id">What is my plugin id?</a>
      */
-    public MetricsLite(Plugin plugin) {
+    public MetricsLite(Plugin plugin, int pluginId) {
         Preconditions.checkNotNull(plugin);
         this.plugin = plugin;
+        this.pluginId = pluginId;
 
         // Get the config file
         File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");
@@ -193,6 +198,7 @@ public class MetricsLite {
         String pluginVersion = plugin.getDescription().getVersion();
 
         data.addProperty("pluginName", pluginName); // Append the name of the plugin
+        data.addProperty("id", pluginId); // Append the id of the plugin
         data.addProperty("pluginVersion", pluginVersion); // Append the version of the plugin
 
         JsonArray customCharts = new JsonArray();
@@ -308,7 +314,7 @@ public class MetricsLite {
             throw new IllegalAccessException("This method must not be called from the main thread!");
         }
         if (logSentData) {
-            plugin.getLogger().info("Sending data to bStats: " + data.toString());
+            plugin.getLogger().info("Sending data to bStats: " + data);
         }
         HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
@@ -328,20 +334,18 @@ public class MetricsLite {
         connection.setDoOutput(true);
         try (DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
             outputStream.write(compressedData);
-            outputStream.flush();
         }
 
-        InputStream inputStream = connection.getInputStream();
-        StringBuilder builder;
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-            builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 builder.append(line);
             }
         }
+
         if (logResponseStatusText) {
-            plugin.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+            plugin.getLogger().info("Sent data to bStats and received response: " + builder);
         }
     }
 

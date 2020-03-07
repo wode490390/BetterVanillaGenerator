@@ -1,5 +1,6 @@
 package cn.wode490390.nukkit.vanillagenerator;
 
+import cn.nukkit.Server;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockStone;
 import cn.nukkit.level.ChunkManager;
@@ -26,13 +27,27 @@ import cn.wode490390.nukkit.vanillagenerator.noise.PerlinOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.SimplexOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.OctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorCaves;
+import cn.wode490390.nukkit.vanillagenerator.scheduler.CLNoiseReleaseTask;
+import cn.wode490390.nukkit.vanillagenerator.util.OpenCL;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.jogamp.opencl.CLBuffer;
+import com.jogamp.opencl.CLKernel;
+import com.jogamp.opencl.CLMemory;
+import com.jogamp.opencl.CLProgram;
+
+import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class NormalGenerator extends VanillaGenerator {
+
+    protected static boolean useGPU;
+
+    public static void setUseGraphicsCompute(boolean enable) {
+        useGPU = enable;
+    }
 
     /**
      * The biome maps used to fill chunks biome grid and terrain generation.
@@ -359,15 +374,56 @@ public class NormalGenerator extends VanillaGenerator {
         int sizeX = octaveGenerator.getSizeX();
         int sizeZ = octaveGenerator.getSizeZ();
 
-        double[] surfaceNoise = octaveGenerator.getFractalBrownianMotion(cx, cz, 0.5d, 0.5d);
-        for (int sx = 0; sx < sizeX; sx++) {
-            for (int sz = 0; sz < sizeZ; sz++) {
-                if (GROUND_MAP.containsKey(biomes.getBiome(sx, sz))) {
-                    GROUND_MAP.get(biomes.getBiome(sx, sz)).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
-                } else {
-                    groundGen.generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
+        if (useGPU) {
+            CLKernel noiseGen = null;
+            CLBuffer<FloatBuffer> noise = null;
+            try {
+                // Initialize OpenCL stuff and put args
+                CLProgram program = OpenCL.getProgram("cn/wode490390/opencl/CLRandom.cl");
+                int workSize = sizeX * octaveGenerator.getSizeY() * sizeZ;
+                noise = OpenCL.getContext().createFloatBuffer(workSize, CLMemory.Mem.WRITE_ONLY);
+                noiseGen = OpenCL.getKernel(program, "GenerateNoise", true);
+                noiseGen.putArg(this.nukkitRandom.nextFloat())
+                        .putArg(this.nukkitRandom.nextFloat())
+                        .putArg(noise)
+                        .putArg(workSize);
+
+                // Calculate noise on GPU
+                OpenCL.getQueue()
+                        .put1DRangeKernel(noiseGen, 0, OpenCL.getGlobalSize(workSize), OpenCL.getLocalSize())
+                        .putReadBuffer(noise, true);
+
+                // Use noise
+                for (int sx = 0; sx < sizeX; sx++) {
+                    for (int sz = 0; sz < sizeZ; sz++) {
+                        if (GROUND_MAP.containsKey(biomes.getBiome(sx, sz))) {
+                            GROUND_MAP.get(biomes.getBiome(sx, sz)).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), noise.getBuffer().get(sx | sz << 4));
+                        } else {
+                            groundGen.generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), noise.getBuffer().get(sx | sz << 4));
+                        }
+                        chunkData.setBiomeId(sx, sz, biomes.getBiome(sx, sz));
+                    }
                 }
-                chunkData.setBiomeId(sx, sz, biomes.getBiome(sx, sz));
+            } finally {
+                // Clean up
+                if (noise != null) {
+                    Server.getInstance().getScheduler().scheduleAsyncTask(BetterGenerator.getInstance(), new CLNoiseReleaseTask(noise));
+                }
+                if (noiseGen != null) {
+                    noiseGen.rewind();
+                }
+            }
+        } else {
+            double[] surfaceNoise = octaveGenerator.getFractalBrownianMotion(cx, cz, 0.5d, 0.5d);
+            for (int sx = 0; sx < sizeX; sx++) {
+                for (int sz = 0; sz < sizeZ; sz++) {
+                    if (GROUND_MAP.containsKey(biomes.getBiome(sx, sz))) {
+                        GROUND_MAP.get(biomes.getBiome(sx, sz)).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
+                    } else {
+                        groundGen.generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
+                    }
+                    chunkData.setBiomeId(sx, sz, biomes.getBiome(sx, sz));
+                }
             }
         }
 

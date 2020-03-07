@@ -92,3 +92,8 @@ generator:
         y: 60.0
         z: 80.0
     surface-scale: 0.0625
+
+# Whether to use graphics compute functionality (Experimental)
+gpu:
+  enable: false
+  use-any-device: false
