@@ -310,8 +310,9 @@ public class NetherGenerator extends VanillaGenerator {
      * @return A map of {@link OctaveGenerator}s
      */
     protected Map<String, OctaveGenerator> getWorldOctaves() {
-        if (this.octaveCache.get(this.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = Maps.newHashMap();
+        Map<String, OctaveGenerator> octaves = this.octaveCache.get(this.getName());
+        if (octaves == null) {
+            octaves = Maps.newHashMap();
             NukkitRandom seed = new NukkitRandom(this.level.getSeed());
 
             /*OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
@@ -352,8 +353,7 @@ public class NetherGenerator extends VanillaGenerator {
             octaves.put("gravel", gen);
 
             this.octaveCache.put(this.getName(), octaves);
-            return octaves;
         }
-        return this.octaveCache.get(this.getName());
+        return octaves;
     }
 }

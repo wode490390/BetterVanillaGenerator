@@ -27,6 +27,7 @@ import cn.wode490390.nukkit.vanillagenerator.noise.PerlinOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.SimplexOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.OctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorCaves;
+import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorSnowLayers;
 import cn.wode490390.nukkit.vanillagenerator.scheduler.CLNoiseReleaseTask;
 import cn.wode490390.nukkit.vanillagenerator.util.OpenCL;
 import com.google.common.collect.Lists;
@@ -137,8 +138,8 @@ public class NormalGenerator extends VanillaGenerator {
         }
     }
 
-    protected final List<Populator> populators = Lists.newArrayList();
     protected final List<Populator> generationPopulators = Lists.newArrayList();
+    protected final List<Populator> populators = Lists.newArrayList();
     protected ChunkManager level;
     protected NukkitRandom nukkitRandom;
     protected long localSeed1;
@@ -176,6 +177,8 @@ public class NormalGenerator extends VanillaGenerator {
         this.localSeed2 = ThreadLocalRandom.current().nextLong();
         this.nukkitRandom.setSeed(this.level.getSeed());
 
+        this.generationPopulators.add(new PopulatorCaves());
+
         PopulatorOre ores = new PopulatorOre();
         ores.setOreTypes(new OreType[]{
                 new OreType(Block.get(COAL_ORE), 20, 17, 0, 128),
@@ -192,7 +195,7 @@ public class NormalGenerator extends VanillaGenerator {
         });
         this.populators.add(ores);
 
-        this.populators.add(new PopulatorCaves());
+        this.populators.add(new PopulatorSnowLayers());
 
         this.biomeGrid = MapLayer.initialize(level.getSeed(), this.getDimension(), this.getId());
     }
@@ -428,19 +431,16 @@ public class NormalGenerator extends VanillaGenerator {
         }
 
         //populate chunk
-        for (Populator populator : this.generationPopulators) {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunkData);
-        }
+        this.generationPopulators.forEach(populator -> populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunkData));
     }
 
     @Override
     public void populateChunk(int chunkX, int chunkZ) {
         BaseFullChunk chunk = this.level.getChunk(chunkX, chunkZ);
         this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
-        this.populators.forEach((populator) -> {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
-        });
+
         Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
+        this.populators.forEach(populator -> populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk));
     }
 
     @Override
@@ -455,8 +455,9 @@ public class NormalGenerator extends VanillaGenerator {
      * @return A map of {@link OctaveGenerator}s
      */
     protected Map<String, OctaveGenerator> getWorldOctaves() {
-        if (this.octaveCache.get(this.getName()) == null) {
-            Map<String, OctaveGenerator> octaves = Maps.newHashMap();
+        Map<String, OctaveGenerator> octaves = this.octaveCache.get(this.getName());
+        if (octaves == null) {
+            octaves = Maps.newHashMap();
             NukkitRandom seed = new NukkitRandom(this.level.getSeed());
 
             OctaveGenerator gen = new PerlinOctaveGenerator(seed, 16, 5, 5);
@@ -487,9 +488,8 @@ public class NormalGenerator extends VanillaGenerator {
             octaves.put("surface", gen);
 
             this.octaveCache.put(this.getName(), octaves);
-            return octaves;
         }
-        return this.octaveCache.get(this.getName());
+        return octaves;
     }
 
     /**

@@ -2,7 +2,8 @@ package cn.wode490390.nukkit.vanillagenerator;
 
 import cn.nukkit.level.generator.Generator;
 import cn.nukkit.utils.Config;
-import com.google.common.collect.Maps;
+
+import java.util.Collections;
 import java.util.Map;
 
 public abstract class VanillaGenerator extends Generator {
@@ -10,7 +11,7 @@ public abstract class VanillaGenerator extends Generator {
     public static final int TYPE_LARGE_BIOMES = 5;
     public static final int TYPE_AMPLIFIED = 6;
 
-    protected static int SEA_LEVEL;
+    public static int SEA_LEVEL;
 
     private static Config config;
 
@@ -27,6 +28,6 @@ public abstract class VanillaGenerator extends Generator {
 
     @Override
     public Map<String, Object> getSettings() {
-        return Maps.newHashMap();
+        return Collections.emptyMap();
     }
 }

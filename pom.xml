@@ -7,7 +7,7 @@
     <groupId>cn.wode490390.nukkit</groupId>
     <artifactId>vanillagenerator</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <name>BetterVanillaGenerator</name>
     <description>Better vanilla generator plugin for Nukkit</description>
     <url>http://wode490390.cn/</url>
@@ -54,7 +54,7 @@
     <repositories>
         <repository>
             <id>nukkitx-repo</id>
-            <url>http://repo.nukkitx.com/main/</url>
+            <url>https://repo.nukkitx.com/main/</url>
         </repository>
     </repositories>
 
