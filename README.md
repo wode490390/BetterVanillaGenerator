@@ -21,9 +21,10 @@ If you like this plugin, please star it on [GitHub](https://github.com/wode49039
 - [Releases](https://github.com/wode490390/BetterVanillaGenerator/releases)
 - [Snapshots](https://circleci.com/gh/wode490390/BetterVanillaGenerator)
 
-## Configurations
+## Configuration
+<details>
+<summary>config.yml</summary>
 
-### config.yml
 ```yaml
 replace:
   # Whether to replace the overworld generator
@@ -125,6 +126,7 @@ gpu:
   enable: false
   use-any-device: false
 ```
+</details>
 
 ## Compiling
 1. Install [Maven](https://maven.apache.org/).
