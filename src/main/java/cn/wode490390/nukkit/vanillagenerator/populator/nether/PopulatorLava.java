@@ -11,7 +11,7 @@ public class PopulatorLava extends PopulatorBlock {
     private ChunkManager level;
     private NukkitRandom random;
 
-    private boolean flowing;
+    private final boolean flowing;
     
     public PopulatorLava() {
         this(false);

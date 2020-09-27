@@ -7,7 +7,7 @@
     <groupId>cn.wode490390.nukkit</groupId>
     <artifactId>vanillagenerator</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>BetterVanillaGenerator</name>
     <description>Better vanilla generator plugin for Nukkit</description>
     <url>http://wode490390.cn/</url>
@@ -96,7 +96,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.2.4</version>
                 <configuration>
                     <!--<filters>
                         <filter>
@@ -120,7 +120,7 @@
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.2</version>
                 <executions>
                     <execution>
                         <id>get-the-git-infos</id>

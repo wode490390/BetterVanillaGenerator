@@ -7,7 +7,7 @@ import cn.wode490390.nukkit.vanillagenerator.populator.PopulatorBlock;
 
 public class PopulatorGlowstone extends PopulatorBlock {
 
-    private boolean variableAmount;
+    private final boolean variableAmount;
     
     public PopulatorGlowstone() {
         this(false);

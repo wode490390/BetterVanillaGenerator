@@ -2,19 +2,22 @@ package cn.wode490390.nukkit.vanillagenerator.biomegrid;
 
 import cn.nukkit.level.biome.EnumBiome;
 import com.google.common.collect.Maps;
-import java.util.Arrays;
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class MapLayerBiomeEdge extends MapLayer {
 
-    private static final Map<Integer, Integer> MESA_EDGES = Maps.newHashMap();
-    private static final Map<Integer, Integer> MEGA_TAIGA_EDGES = Maps.newHashMap();
-    private static final Map<Integer, Integer> DESERT_EDGES = Maps.newHashMap();
-    private static final Map<Integer, Integer> SWAMP1_EDGES = Maps.newHashMap();
-    private static final Map<Integer, Integer> SWAMP2_EDGES = Maps.newHashMap();
-    private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = Maps.newHashMap();
+    private static final Int2IntMap MESA_EDGES = new Int2IntOpenHashMap();
+    private static final Int2IntMap MEGA_TAIGA_EDGES = new Int2IntOpenHashMap();
+    private static final Int2IntMap DESERT_EDGES = new Int2IntOpenHashMap();
+    private static final Int2IntMap SWAMP1_EDGES = new Int2IntOpenHashMap();
+    private static final Int2IntMap SWAMP2_EDGES = new Int2IntOpenHashMap();
+    private static final Map<Int2IntMap, IntList> EDGES = Maps.newHashMap();
 
     static {
         MESA_EDGES.put(EnumBiome.MESA_PLATEAU_F.id, EnumBiome.MESA.id);
@@ -29,9 +32,9 @@ public class MapLayerBiomeEdge extends MapLayer {
 
         EDGES.put(MESA_EDGES, null);
         EDGES.put(MEGA_TAIGA_EDGES, null);
-        EDGES.put(DESERT_EDGES, Arrays.asList(EnumBiome.ICE_PLAINS.id));
-        EDGES.put(SWAMP1_EDGES, Arrays.asList(EnumBiome.DESERT.id, EnumBiome.COLD_TAIGA.id, EnumBiome.ICE_PLAINS.id));
-        EDGES.put(SWAMP2_EDGES, Arrays.asList(EnumBiome.JUNGLE.id));
+        EDGES.put(DESERT_EDGES, IntArrayList.wrap(new int[]{EnumBiome.ICE_PLAINS.id}));
+        EDGES.put(SWAMP1_EDGES, IntArrayList.wrap(new int[]{EnumBiome.DESERT.id, EnumBiome.COLD_TAIGA.id, EnumBiome.ICE_PLAINS.id}));
+        EDGES.put(SWAMP2_EDGES, IntArrayList.wrap(new int[]{EnumBiome.JUNGLE.id}));
     }
 
     private final MapLayer belowLayer;
@@ -55,17 +58,18 @@ public class MapLayerBiomeEdge extends MapLayer {
                 // This applies biome large edges using Von Neumann neighborhood
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
                 int val = centerVal;
-                for (Entry<Map<Integer, Integer>, List<Integer>> entry : EDGES.entrySet()) {
-                    Map<Integer, Integer> map = entry.getKey();
+                for (Entry<Int2IntMap, IntList> entry : EDGES.entrySet()) {
+                    Int2IntMap map = entry.getKey();
                     if (map.containsKey(centerVal)) {
                         int upperVal = values[j + 1 + i * gridSizeX];
                         int lowerVal = values[j + 1 + (i + 2) * gridSizeX];
                         int leftVal = values[j + (i + 1) * gridSizeX];
                         int rightVal = values[j + 2 + (i + 1) * gridSizeX];
-                        if (entry.getValue() == null && (!map.containsKey(upperVal) || !map.containsKey(lowerVal) || !map.containsKey(leftVal) || !map.containsKey(rightVal))) {
+                        IntList entryValue = entry.getValue();
+                        if (entryValue == null && (!map.containsKey(upperVal) || !map.containsKey(lowerVal) || !map.containsKey(leftVal) || !map.containsKey(rightVal))) {
                             val = map.get(centerVal);
                             break;
-                        } else if (entry.getValue() != null && (entry.getValue().contains(upperVal) || entry.getValue().contains(lowerVal) || entry.getValue().contains(leftVal) || entry.getValue().contains(rightVal))) {
+                        } else if (entryValue != null && (entryValue.contains(upperVal) || entryValue.contains(lowerVal) || entryValue.contains(leftVal) || entryValue.contains(rightVal))) {
                             val = map.get(centerVal);
                             break;
                         }

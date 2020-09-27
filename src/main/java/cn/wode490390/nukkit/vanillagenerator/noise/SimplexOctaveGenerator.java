@@ -3,6 +3,8 @@ package cn.wode490390.nukkit.vanillagenerator.noise;
 import cn.nukkit.math.NukkitRandom;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.NoiseGenerator;
 
+import java.util.Arrays;
+
 public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
 
     public SimplexOctaveGenerator(NukkitRandom rand, int octaves, int sizeX, int sizeZ) {
@@ -29,9 +31,7 @@ public class SimplexOctaveGenerator extends PerlinOctaveGenerator {
 
     @Override
     public double[] getFractalBrownianMotion(double x, double y, double z, double lacunarity, double persistence) {
-        for (int i = 0; i < noise.length; i++) {
-            noise[i] = 0;
-        }
+        Arrays.fill(noise, 0);
 
         double freq = 1;
         double amp = 1;

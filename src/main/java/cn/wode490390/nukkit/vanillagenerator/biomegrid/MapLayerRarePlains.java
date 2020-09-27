@@ -1,12 +1,12 @@
 package cn.wode490390.nukkit.vanillagenerator.biomegrid;
 
 import cn.nukkit.level.biome.EnumBiome;
-import com.google.common.collect.Maps;
-import java.util.Map;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 
 public class MapLayerRarePlains extends MapLayer {
 
-    private static final Map<Integer, Integer> RARE_PLAINS = Maps.newHashMap();
+    private static final Int2IntMap RARE_PLAINS = new Int2IntOpenHashMap();
 
     static {
         RARE_PLAINS.put(EnumBiome.PLAINS.id, EnumBiome.SUNFLOWER_PLAINS.id);

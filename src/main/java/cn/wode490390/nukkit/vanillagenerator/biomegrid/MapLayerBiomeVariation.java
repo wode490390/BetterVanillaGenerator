@@ -2,13 +2,13 @@ package cn.wode490390.nukkit.vanillagenerator.biomegrid;
 
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
-import com.google.common.collect.Maps;
-import java.util.Map;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class MapLayerBiomeVariation extends MapLayer {
 
     private static final int[] ISLANDS = new int[]{EnumBiome.PLAINS.id, EnumBiome.FOREST.id};
-    private static final Map<Integer, int[]> VARIATIONS = Maps.newHashMap();
+    private static final Int2ObjectMap<int[]> VARIATIONS = new Int2ObjectOpenHashMap<>();
 
     static {
         VARIATIONS.put(EnumBiome.DESERT.id, new int[]{EnumBiome.DESERT_HILLS.id});

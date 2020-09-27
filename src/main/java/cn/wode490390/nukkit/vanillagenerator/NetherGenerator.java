@@ -7,19 +7,20 @@ import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.Generator;
-import cn.nukkit.level.generator.object.ore.OreType;
-import cn.nukkit.level.generator.populator.impl.PopulatorOre;
 import cn.nukkit.level.generator.populator.type.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
 import cn.wode490390.nukkit.vanillagenerator.noise.PerlinOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.OctaveGenerator;
+import cn.wode490390.nukkit.vanillagenerator.object.OreType;
+import cn.wode490390.nukkit.vanillagenerator.populator.PopulatorOre;
 import cn.wode490390.nukkit.vanillagenerator.populator.nether.PopulatorFire;
 import cn.wode490390.nukkit.vanillagenerator.populator.nether.PopulatorGlowstone;
 import cn.wode490390.nukkit.vanillagenerator.populator.nether.PopulatorLava;
 import cn.wode490390.nukkit.vanillagenerator.populator.nether.PopulatorMushroom;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -47,11 +48,11 @@ public class NetherGenerator extends VanillaGenerator {
     protected long localSeed2;
 
     public NetherGenerator() {
-
+        // reflect
     }
 
     public NetherGenerator(Map<String, Object> options) {
-
+        // reflect
     }
 
     @Override
@@ -282,18 +283,14 @@ public class NetherGenerator extends VanillaGenerator {
             }
         }
 
-        this.generationPopulators.forEach((populator) -> {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
-        });
+        this.generationPopulators.forEach(populator -> populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk));
     }
 
     @Override
     public void populateChunk(int chunkX, int chunkZ) {
         BaseFullChunk chunk = level.getChunk(chunkX, chunkZ);
         this.nukkitRandom.setSeed(0xdeadbeef ^ (chunkX << 8) ^ chunkZ ^ this.level.getSeed());
-        this.populators.forEach((populator) -> {
-            populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk);
-        });
+        this.populators.forEach(populator -> populator.populate(this.level, chunkX, chunkZ, this.nukkitRandom, chunk));
         Biome.getBiome(chunk.getBiomeId(7, 7)).populateChunk(this.level, chunkX, chunkZ, this.nukkitRandom);
     }
 

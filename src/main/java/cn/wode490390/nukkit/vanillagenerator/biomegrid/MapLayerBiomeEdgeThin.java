@@ -2,19 +2,22 @@ package cn.wode490390.nukkit.vanillagenerator.biomegrid;
 
 import cn.nukkit.level.biome.EnumBiome;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import java.util.Arrays;
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class MapLayerBiomeEdgeThin extends MapLayer {
 
-    private static final Set<Integer> OCEANS = Sets.newHashSet();
-    private static final Map<Integer, Integer> MESA_EDGES = Maps.newHashMap();
-    private static final Map<Integer, Integer> JUNGLE_EDGES = Maps.newHashMap();
-    private static final Map<Map<Integer, Integer>, List<Integer>> EDGES = Maps.newHashMap();
+    private static final IntSet OCEANS = new IntOpenHashSet();
+    private static final Int2IntMap MESA_EDGES = new Int2IntOpenHashMap();
+    private static final Int2IntMap JUNGLE_EDGES = new Int2IntOpenHashMap();
+    private static final Map<Int2IntMap, IntList> EDGES = Maps.newHashMap();
 
     static {
         OCEANS.add(EnumBiome.OCEAN.id);
@@ -33,7 +36,7 @@ public class MapLayerBiomeEdgeThin extends MapLayer {
         JUNGLE_EDGES.put(EnumBiome.JUNGLE_EDGE_M.id, EnumBiome.JUNGLE_EDGE.id);
 
         EDGES.put(MESA_EDGES, null);
-        EDGES.put(JUNGLE_EDGES, Arrays.asList(EnumBiome.JUNGLE.id, EnumBiome.JUNGLE_HILLS.id, EnumBiome.JUNGLE_M.id, EnumBiome.JUNGLE_EDGE_M.id, EnumBiome.FOREST.id, EnumBiome.TAIGA.id));
+        EDGES.put(JUNGLE_EDGES, IntArrayList.wrap(new int[]{EnumBiome.JUNGLE.id, EnumBiome.JUNGLE_HILLS.id, EnumBiome.JUNGLE_M.id, EnumBiome.JUNGLE_EDGE_M.id, EnumBiome.FOREST.id, EnumBiome.TAIGA.id}));
     }
 
     private final MapLayer belowLayer;
@@ -57,14 +60,14 @@ public class MapLayerBiomeEdgeThin extends MapLayer {
                 // This applies biome thin edges using Von Neumann neighborhood
                 int centerVal = values[j + 1 + (i + 1) * gridSizeX];
                 int val = centerVal;
-                for (Entry<Map<Integer, Integer>, List<Integer>> entry : EDGES.entrySet()) {
-                    Map<Integer, Integer> map = entry.getKey();
+                for (Entry<Int2IntMap, IntList> entry : EDGES.entrySet()) {
+                    Int2IntMap map = entry.getKey();
                     if (map.containsKey(centerVal)) {
                         int upperVal = values[j + 1 + i * gridSizeX];
                         int lowerVal = values[j + 1 + (i + 2) * gridSizeX];
                         int leftVal = values[j + (i + 1) * gridSizeX];
                         int rightVal = values[j + 2 + (i + 1) * gridSizeX];
-                        List<Integer> entryValue = entry.getValue();
+                        IntList entryValue = entry.getValue();
                         if (entryValue == null && (!OCEANS.contains(upperVal) && !map.containsKey(upperVal) || !OCEANS.contains(lowerVal) && !map.containsKey(lowerVal) || !OCEANS.contains(leftVal) && !map.containsKey(leftVal) || !OCEANS.contains(rightVal) && !map.containsKey(rightVal))) {
                             val = map.get(centerVal);
                             break;

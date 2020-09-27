@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 
 public class CLNoiseReleaseTask extends AsyncTask {
 
-    private CLBuffer<FloatBuffer> noise;
+    private final CLBuffer<FloatBuffer> noise;
 
     public CLNoiseReleaseTask(CLBuffer<FloatBuffer> noise) {
         this.noise = noise;

@@ -1,15 +1,15 @@
 package cn.wode490390.nukkit.vanillagenerator.biomegrid;
 
 import cn.nukkit.level.biome.EnumBiome;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import java.util.Map;
-import java.util.Set;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 public class MapLayerShore extends MapLayer {
 
-    private static final Set<Integer> OCEANS = Sets.newHashSet();
-    private static final Map<Integer, Integer> SPECIAL_SHORES = Maps.newHashMap();
+    private static final IntSet OCEANS = new IntOpenHashSet();
+    private static final Int2IntMap SPECIAL_SHORES = new Int2IntOpenHashMap();
 
     static {
         OCEANS.add(EnumBiome.OCEAN.id);

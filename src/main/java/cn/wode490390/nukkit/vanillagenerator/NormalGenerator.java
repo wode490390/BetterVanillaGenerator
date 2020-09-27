@@ -7,8 +7,6 @@ import cn.nukkit.level.ChunkManager;
 import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
-import cn.nukkit.level.generator.object.ore.OreType;
-import cn.nukkit.level.generator.populator.impl.PopulatorOre;
 import cn.nukkit.level.generator.populator.type.Populator;
 import cn.nukkit.math.NukkitRandom;
 import cn.nukkit.math.Vector3;
@@ -26,6 +24,8 @@ import cn.wode490390.nukkit.vanillagenerator.ground.GroundGeneratorSnowy;
 import cn.wode490390.nukkit.vanillagenerator.noise.PerlinOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.SimplexOctaveGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.OctaveGenerator;
+import cn.wode490390.nukkit.vanillagenerator.object.OreType;
+import cn.wode490390.nukkit.vanillagenerator.populator.PopulatorOre;
 import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorCaves;
 import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorSnowLayers;
 import cn.wode490390.nukkit.vanillagenerator.scheduler.CLNoiseReleaseTask;
@@ -37,6 +37,8 @@ import com.jogamp.opencl.CLBuffer;
 import com.jogamp.opencl.CLKernel;
 import com.jogamp.opencl.CLMemory;
 import com.jogamp.opencl.CLProgram;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -57,8 +59,8 @@ public class NormalGenerator extends VanillaGenerator {
     protected MapLayer[] biomeGrid;
 
     protected static final double[][] ELEVATION_WEIGHT = new double[5][5];
-    protected static final Map<Integer, GroundGenerator> GROUND_MAP = Maps.newHashMap();
-    protected static final Map<Integer, BiomeHeight> HEIGHT_MAP = Maps.newHashMap();
+    protected static final Int2ObjectMap<GroundGenerator> GROUND_MAP = new Int2ObjectOpenHashMap<>();
+    protected static final Int2ObjectMap<BiomeHeight> HEIGHT_MAP = new Int2ObjectOpenHashMap<>();
 
     protected static double coordinateScale = getConfig("overworld.coordinate-scale", 684.412d);
     protected static double heightScale = getConfig("overworld.height.scale", 684.412d);
@@ -147,11 +149,11 @@ public class NormalGenerator extends VanillaGenerator {
     protected long localSeed2;
 
     public NormalGenerator() {
-
+        // reflect
     }
 
     public NormalGenerator(Map<String, Object> options) {
-
+        // reflect
     }
 
     @Override
@@ -398,11 +400,7 @@ public class NormalGenerator extends VanillaGenerator {
                 // Use noise
                 for (int sx = 0; sx < sizeX; sx++) {
                     for (int sz = 0; sz < sizeZ; sz++) {
-                        if (GROUND_MAP.containsKey(biomes.getBiome(sx, sz))) {
-                            GROUND_MAP.get(biomes.getBiome(sx, sz)).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), noise.getBuffer().get(sx | sz << 4));
-                        } else {
-                            groundGen.generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), noise.getBuffer().get(sx | sz << 4));
-                        }
+                        GROUND_MAP.getOrDefault(biomes.getBiome(sx, sz), groundGen).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), noise.getBuffer().get(sx | sz << 4));
                         chunkData.setBiomeId(sx, sz, biomes.getBiome(sx, sz));
                     }
                 }
@@ -419,11 +417,7 @@ public class NormalGenerator extends VanillaGenerator {
             double[] surfaceNoise = octaveGenerator.getFractalBrownianMotion(cx, cz, 0.5d, 0.5d);
             for (int sx = 0; sx < sizeX; sx++) {
                 for (int sz = 0; sz < sizeZ; sz++) {
-                    if (GROUND_MAP.containsKey(biomes.getBiome(sx, sz))) {
-                        GROUND_MAP.get(biomes.getBiome(sx, sz)).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
-                    } else {
-                        groundGen.generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
-                    }
+                    GROUND_MAP.getOrDefault(biomes.getBiome(sx, sz), groundGen).generateTerrainColumn(level, chunkData, this.nukkitRandom, cx + sx, cz + sz, biomes.getBiome(sx, sz), surfaceNoise[sx | sz << 4]);
                     chunkData.setBiomeId(sx, sz, biomes.getBiome(sx, sz));
                 }
             }

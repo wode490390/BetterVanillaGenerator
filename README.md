@@ -11,9 +11,9 @@ In addition, this plugin can offload overworld surface noise operations onto the
 
 [![](https://i.loli.net/2019/06/12/5d00613070e3947388.png)](https://www.mcbbs.net/thread-872584-1-1.html "可自定义的更好的原生地形生成器")
 
-If you found any bugs or have any suggestions, please open an issue on [GitHub Issues](https://github.com/wode490390/BetterVanillaGenerator/issues).
+If you found any bugs or have any suggestions, please open an issue on [GitHub](https://github.com/wode490390/BetterVanillaGenerator/issues).
 
-If you love this plugin, please star it on [GitHub](https://github.com/wode490390/BetterVanillaGenerator).
+If you like this plugin, please star it on [GitHub](https://github.com/wode490390/BetterVanillaGenerator).
 
 *Note: Please back up old worlds before using this plugin.*
 
@@ -132,8 +132,8 @@ gpu:
 
 ## Metrics Collection
 
-This plugin uses [bStats](https://github.com/wode490390/bStats-Nukkit) - you can opt out using the global bStats config, see the [official website](https://bstats.org/getting-started) for more details.
+This plugin uses [bStats](https://github.com/wode490390/bStats-Nukkit). You can opt out using the global bStats config; see the [official website](https://bstats.org/getting-started) for more details.
 
 [![Metrics](https://bstats.org/signatures/bukkit/BetterVanillaGenerator.svg)](https://bstats.org/plugin/bukkit/BetterVanillaGenerator/5198)
 
-###### If I have any grammar and terms error, please correct my wrong :)
+###### If I have any grammar and/or term errors, please correct them :)

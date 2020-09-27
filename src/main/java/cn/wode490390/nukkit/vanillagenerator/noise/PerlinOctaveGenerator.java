@@ -4,6 +4,8 @@ import cn.nukkit.math.NukkitRandom;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.NoiseGenerator;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.OctaveGenerator;
 
+import java.util.Arrays;
+
 public class PerlinOctaveGenerator extends OctaveGenerator {
 
     protected final int sizeX;
@@ -78,9 +80,7 @@ public class PerlinOctaveGenerator extends OctaveGenerator {
      * @return The noise array
      */
     public double[] getFractalBrownianMotion(double x, double y, double z, double lacunarity, double persistence) {
-        for (int i = 0; i < noise.length; i++) {
-            noise[i] = 0;
-        }
+        Arrays.fill(noise, 0);
 
         double freq = 1;
         double amp = 1;

@@ -4,12 +4,12 @@ import cn.nukkit.level.biome.Biome;
 import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.math.NukkitRandom;
 import cn.wode490390.nukkit.vanillagenerator.noise.bukkit.SimplexOctaveGenerator;
-import com.google.common.collect.Maps;
-import java.util.Map;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class BiomeClimate {
 
-    private static final Map<Integer, Climate> CLIMATE_MAP = Maps.newHashMap();
+    private static final Int2ObjectMap<Climate> CLIMATE_MAP = new Int2ObjectOpenHashMap<>();
     private static final SimplexOctaveGenerator noiseGen;
 
     static {

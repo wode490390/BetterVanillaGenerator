@@ -1,15 +1,15 @@
 package cn.wode490390.nukkit.vanillagenerator.biomegrid;
 
 import cn.nukkit.level.biome.EnumBiome;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import java.util.Map;
-import java.util.Set;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 public class MapLayerRiver extends MapLayer {
 
-    private static final Set<Integer> OCEANS = Sets.newHashSet();
-    private static final Map<Integer, Integer> SPECIAL_RIVERS = Maps.newHashMap();
+    private static final IntSet OCEANS = new IntOpenHashSet();
+    private static final Int2IntMap SPECIAL_RIVERS = new Int2IntOpenHashMap();
     private static final int CLEAR_VALUE = 0;
     private static final int RIVER_VALUE = 1;
 
