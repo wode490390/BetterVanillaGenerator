@@ -30,6 +30,7 @@ import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorCaves;
 import cn.wode490390.nukkit.vanillagenerator.populator.overworld.PopulatorSnowLayers;
 import cn.wode490390.nukkit.vanillagenerator.scheduler.CLNoiseReleaseTask;
 import cn.wode490390.nukkit.vanillagenerator.util.OpenCL;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jogamp.opencl.CLBuffer;
@@ -138,8 +139,8 @@ public class NormalGenerator extends VanillaGenerator {
         }
     }
 
-    protected final List<Populator> generationPopulators = Lists.newArrayList();
-    protected final List<Populator> populators = Lists.newArrayList();
+    protected List<Populator> generationPopulators = Lists.newArrayList();
+    protected List<Populator> populators = Lists.newArrayList();
     protected ChunkManager level;
     protected NukkitRandom nukkitRandom;
     protected long localSeed1;
@@ -177,26 +178,24 @@ public class NormalGenerator extends VanillaGenerator {
         this.localSeed2 = ThreadLocalRandom.current().nextLong();
         this.nukkitRandom.setSeed(this.level.getSeed());
 
-        this.generationPopulators.add(new PopulatorCaves());
+        this.generationPopulators = ImmutableList.of(new PopulatorCaves());
 
-        PopulatorOre ores = new PopulatorOre();
-        ores.setOreTypes(new OreType[]{
-                new OreType(Block.get(COAL_ORE), 20, 17, 0, 128),
-                new OreType(Block.get(IRON_ORE), 20, 9, 0, 64),
-                new OreType(Block.get(REDSTONE_ORE), 8, 8, 0, 16),
-                new OreType(Block.get(LAPIS_ORE), 1, 7, 0, 16),
-                new OreType(Block.get(GOLD_ORE), 2, 9, 0, 32),
-                new OreType(Block.get(DIAMOND_ORE), 1, 8, 0, 16),
-                new OreType(Block.get(DIRT), 10, 33, 0, 128),
-                new OreType(Block.get(GRAVEL), 8, 33, 0, 128),
-                new OreType(Block.get(STONE, BlockStone.GRANITE), 10, 33, 0, 80),
-                new OreType(Block.get(STONE, BlockStone.DIORITE), 10, 33, 0, 80),
-                new OreType(Block.get(STONE, BlockStone.ANDESITE), 10, 33, 0, 80)
-        });
-        this.populators.add(ores);
-
-        this.populators.add(new PopulatorSnowLayers());
-
+        this.populators = ImmutableList.of(
+                new PopulatorOre(STONE, new OreType[]{
+                        new OreType(Block.get(COAL_ORE), 20, 17, 0, 128),
+                        new OreType(Block.get(IRON_ORE), 20, 9, 0, 64),
+                        new OreType(Block.get(REDSTONE_ORE), 8, 8, 0, 16),
+                        new OreType(Block.get(LAPIS_ORE), 1, 7, 0, 16),
+                        new OreType(Block.get(GOLD_ORE), 2, 9, 0, 32),
+                        new OreType(Block.get(DIAMOND_ORE), 1, 8, 0, 16),
+                        new OreType(Block.get(DIRT), 10, 33, 0, 128),
+                        new OreType(Block.get(GRAVEL), 8, 33, 0, 128),
+                        new OreType(Block.get(STONE, BlockStone.GRANITE), 10, 33, 0, 80),
+                        new OreType(Block.get(STONE, BlockStone.DIORITE), 10, 33, 0, 80),
+                        new OreType(Block.get(STONE, BlockStone.ANDESITE), 10, 33, 0, 80)
+                }),
+                new PopulatorSnowLayers()
+        );
         this.biomeGrid = MapLayer.initialize(level.getSeed(), this.getDimension(), this.getId());
     }
 

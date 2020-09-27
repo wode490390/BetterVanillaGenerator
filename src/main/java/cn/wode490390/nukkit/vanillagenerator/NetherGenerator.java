@@ -110,8 +110,7 @@ public class NetherGenerator extends VanillaGenerator {
         fire.setAmount(1);
         this.populators.add(fire);
 
-        PopulatorOre ores = new PopulatorOre(NETHERRACK);
-        ores.setOreTypes(new OreType[]{
+        PopulatorOre ores = new PopulatorOre(Block.NETHERRACK, new OreType[]{
                 new OreType(Block.get(LAVA), 32, 1, 0, 32, NETHERRACK),
                 new OreType(Block.get(QUARTZ_ORE), 13, 16, 10, 118, NETHERRACK),
                 new OreType(Block.get(MAGMA), 32, 16, 26, 37, NETHERRACK),
